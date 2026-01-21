@@ -15,7 +15,9 @@ const Gallery = () => {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedPhotos, setSelectedPhotos] = useState(new Set());
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
-    const [heroPhoto, setHeroPhoto] = useState(null); // For slideshow
+    const [heroPhoto, setHeroPhoto] = useState(null); // Current photo
+    const [nextHeroPhoto, setNextHeroPhoto] = useState(null); // Next photo for sliding
+    const [isSliding, setIsSliding] = useState(false); // Animation state
 
     useEffect(() => {
         const unsubscribe = observeAuthState((user) => setCurrentUser(user));
@@ -37,19 +39,36 @@ const Gallery = () => {
     }, []);
 
     useEffect(() => {
-        if (photos.length > 0 && !heroPhoto) {
+        if (photos.length === 0) return;
+
+        // Initial setup
+        if (!heroPhoto) {
             setHeroPhoto(photos[Math.floor(Math.random() * photos.length)]);
+            return;
         }
 
         const interval = setInterval(() => {
-            if (photos.length > 0) {
-                const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
-                setHeroPhoto(randomPhoto);
+            if (photos.length > 0 && !isSliding) {
+                // Prepare next photo
+                let next;
+                do {
+                    next = photos[Math.floor(Math.random() * photos.length)];
+                } while (next.id === heroPhoto.id && photos.length > 1);
+
+                setNextHeroPhoto(next);
+                setIsSliding(true);
+
+                // Complete transition after animation duration (1000ms)
+                setTimeout(() => {
+                    setHeroPhoto(next);
+                    setNextHeroPhoto(null);
+                    setIsSliding(false);
+                }, 1000);
             }
-        }, 5000); // 5 seconds interval
+        }, 5000);
 
         return () => clearInterval(interval);
-    }, [photos, heroPhoto]);
+    }, [photos, heroPhoto, isSliding]);
 
     // Core Logic: Group photos by date
     const getGroupedPhotos = () => {
@@ -227,14 +246,41 @@ const Gallery = () => {
             {/* Hero Slideshow Section */}
             {heroPhoto && (
                 <div className="relative h-[40vh] md:h-[60vh] overflow-hidden group">
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-neutral-900 z-10" />
-                    <img
-                        src={heroPhoto.url}
-                        alt="Featured"
-                        className="w-full h-full object-cover transition-all duration-1000 ease-in-out scale-105 group-hover:scale-100"
-                        style={{ filter: 'brightness(0.7)' }}
-                    />
-                    <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4 text-center">
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-neutral-900 z-30" />
+
+                    {/* Sliding Container */}
+                    <div className="absolute inset-0 z-10 flex w-full h-full">
+                        <div
+                            className={`flex w-full h-full transition-transform duration-1000 ease-in-out`}
+                            style={{
+                                transform: isSliding ? 'translateX(-100%)' : 'translateX(0)',
+                                width: '200%'
+                            }}
+                        >
+                            {/* Current Image */}
+                            <div className="w-1/2 h-full relative">
+                                <img
+                                    src={heroPhoto.url}
+                                    alt="Featured"
+                                    className="w-full h-full object-cover"
+                                    style={{ filter: 'brightness(0.7)' }}
+                                />
+                            </div>
+                            {/* Next Image */}
+                            <div className="w-1/2 h-full relative">
+                                {nextHeroPhoto && (
+                                    <img
+                                        src={nextHeroPhoto.url}
+                                        alt="Next"
+                                        className="w-full h-full object-cover"
+                                        style={{ filter: 'brightness(0.7)' }}
+                                    />
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="absolute inset-0 flex flex-col items-center justify-center z-40 px-4 text-center">
                         <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white mb-4 drop-shadow-2xl">
                             Happy Archive
                         </h1>
@@ -287,9 +333,13 @@ const Gallery = () => {
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => setSelectionMode(true)}
-                                    className="px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition"
+                                    className="px-3 md:px-4 py-1.5 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-medium transition flex items-center gap-2"
+                                    title="사진 선택"
                                 >
-                                    Select
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                    </svg>
+                                    <span className="hidden sm:inline">Select</span>
                                 </button>
 
                                 {/* View Mode Toggle */}
@@ -314,15 +364,24 @@ const Gallery = () => {
                                 <div className="bg-white/10 rounded-lg p-1 flex space-x-1">
                                     <button
                                         onClick={() => setSortMode('captured')}
-                                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${sortMode === 'captured' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        className={`px-3 md:px-4 py-1.5 rounded-md text-sm font-medium transition flex items-center gap-2 ${sortMode === 'captured' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        title="촬영날짜순"
                                     >
-                                        촬영날짜
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                        <span className="hidden sm:inline">촬영날짜</span>
                                     </button>
                                     <button
                                         onClick={() => setSortMode('uploaded')}
-                                        className={`px-4 py-1.5 rounded-md text-sm font-medium transition ${sortMode === 'uploaded' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        className={`px-3 md:px-4 py-1.5 rounded-md text-sm font-medium transition flex items-center gap-2 ${sortMode === 'uploaded' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        title="업로드순"
                                     >
-                                        업로드날짜
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                        <span className="hidden sm:inline">업로드날짜</span>
                                     </button>
                                 </div>
                             </div>
