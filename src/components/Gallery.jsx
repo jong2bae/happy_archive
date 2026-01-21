@@ -476,18 +476,24 @@ const Gallery = () => {
                         className="fixed inset-0 z-50 flex items-center justify-center bg-black/98 backdrop-blur-md"
                         onClick={() => setSelectedPhoto(null)}
                     >
-                        {/* Navigation Buttons (Left/Right) - Desktop */}
+                        {/* Navigation Buttons (Left/Right) */}
                         <button
-                            className="fixed left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white z-[70] hidden md:block transition"
+                            className="fixed left-2 md:left-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/50 text-white z-[70] transition backdrop-blur-sm"
                             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
+                            title="Previous Photo"
                         >
-                            ←
+                            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                            </svg>
                         </button>
                         <button
-                            className="fixed right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white z-[70] hidden md:block transition"
+                            className="fixed right-2 md:right-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/50 text-white z-[70] transition backdrop-blur-sm"
                             onClick={(e) => { e.stopPropagation(); handleNext(); }}
+                            title="Next Photo"
                         >
-                            →
+                            <svg className="w-6 h-6 md:w-8 md:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                            </svg>
                         </button>
 
                         <div
