@@ -42,7 +42,13 @@ const Upload = () => {
                 let metadata = {};
                 try {
                     // Extract all useful EXIF data including GPS
-                    const output = await exifr.parse(file);
+                    // Explicitly requesting gps and translateValues for mobile resilience
+                    const output = await exifr.parse(file, {
+                        gps: true,
+                        tiff: true,
+                        jfif: true,
+                        translateValues: true
+                    });
                     if (output) {
                         capturedAt = output.DateTimeOriginal;
                         metadata = {

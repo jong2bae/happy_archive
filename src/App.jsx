@@ -5,7 +5,7 @@ import Upload from './components/Upload';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/happy_archive/">
       <Layout>
         <Routes>
           <Route path="/" element={<Gallery />} />

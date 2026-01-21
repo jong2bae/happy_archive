@@ -8,8 +8,9 @@ const Gallery = () => {
     const [photos, setPhotos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sortMode, setSortMode] = useState('captured'); // 'captured' | 'uploaded'
-    const [viewMode, setViewMode] = useState('large'); // 'large' | 'compact'
+    const [viewMode, setViewMode] = useState('compact'); // Default to compact
     const [selectedPhoto, setSelectedPhoto] = useState(null);
+    const [showInfo, setShowInfo] = useState(false); // Toggle for info panel in lightbox
     const [currentUser, setCurrentUser] = useState(null);
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedPhotos, setSelectedPhotos] = useState(new Set());
@@ -361,9 +362,31 @@ const Gallery = () => {
                     </button>
 
                     <div
-                        className="flex flex-col md:flex-row w-full h-full max-w-screen-2xl mx-auto overflow-hidden shadow-2xl"
+                        className="flex flex-col md:flex-row w-full h-full max-w-screen-2xl mx-auto overflow-hidden shadow-2xl relative"
                         onClick={(e) => e.stopPropagation()}
                     >
+                        {/* Top Control Bar in Lightbox */}
+                        <div className="absolute top-4 right-4 z-[80] flex gap-2">
+                            <button
+                                onClick={() => setShowInfo(!showInfo)}
+                                className={`p-2.5 rounded-full backdrop-blur-md transition-all ${showInfo ? 'bg-blue-600 text-white' : 'bg-black/50 text-white/80 hover:bg-black/70'}`}
+                                title="Photo Info"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+                            <button
+                                onClick={() => setSelectedPhoto(null)}
+                                className="p-2.5 rounded-full bg-black/50 backdrop-blur-md text-white/80 hover:bg-black/70 transition-all"
+                                title="Close"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
                         {/* Image Viewer */}
                         <div className="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
                             <TransformWrapper
@@ -376,16 +399,30 @@ const Gallery = () => {
                                     <img
                                         src={selectedPhoto.url}
                                         alt="Full size"
-                                        className="max-h-[85vh] md:max-h-full max-w-full object-contain"
+                                        className="max-h-full max-w-full object-contain"
                                     />
                                 </TransformComponent>
                             </TransformWrapper>
                         </div>
 
-                        {/* Metadata Sidebar (Optimized) */}
-                        <div className="w-full md:w-80 bg-[#1a1a1a] border-t md:border-t-0 md:border-l border-white/10 flex flex-col z-20 shadow-xl">
+                        {/* Metadata Sidebar (Responsive & Toggleable) */}
+                        <div className={`
+                            w-full md:w-80 bg-[#1a1a1a]/95 md:bg-[#1a1a1a] backdrop-blur-xl md:backdrop-blur-none
+                            border-t md:border-t-0 md:border-l border-white/10 flex flex-col z-70 shadow-2xl
+                            transition-all duration-300 ease-in-out
+                            fixed inset-x-0 bottom-0 max-h-[70vh] md:relative md:max-h-full
+                            ${showInfo ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:hidden'}
+                        `}>
                             <div className="p-6 overflow-y-auto flex-1">
-                                <h3 className="text-xl font-bold text-white mb-6">Info</h3>
+                                <div className="flex justify-between items-center mb-6">
+                                    <h3 className="text-xl font-bold text-white">Info</h3>
+                                    <button
+                                        className="md:hidden text-gray-400 hover:text-white"
+                                        onClick={() => setShowInfo(false)}
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
 
                                 <dl className="space-y-6">
                                     <div className="grid grid-cols-1 gap-1">
