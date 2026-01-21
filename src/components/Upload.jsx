@@ -48,6 +48,9 @@ const Upload = () => {
                         gps: true,
                         tiff: true,
                         jfif: true,
+                        icc: true,
+                        iptc: true,
+                        xmp: true,
                         translateValues: true,
                         reviveValues: true
                     });
@@ -57,16 +60,29 @@ const Upload = () => {
 
                     if (output) {
                         capturedAt = output.DateTimeOriginal;
+
+                        // Extract GPS with fallbacks for different device/browser behaviors
+                        const lat = output.latitude ?? (output.GPSLatitudeRef === 'S' ? -output.GPSLatitude : output.GPSLatitude);
+                        const lng = output.longitude ?? (output.GPSLongitudeRef === 'W' ? -output.GPSLongitude : output.GPSLongitude);
+
                         metadata = {
                             make: output.Make,
                             model: output.Model,
                             iso: output.ISO,
                             fStop: output.FNumber,
                             shutterSpeed: output.ExposureTime,
-                            latitude: output.latitude,
-                            longitude: output.longitude
+                            latitude: lat,
+                            longitude: lng
                         };
-                        // Remove undefined OR NaN values (Firestore doesn't support undefined, and NaN is useless)
+
+                        // Debug log specifically for GPS
+                        if (lat && lng) {
+                            console.log(`GPS FOUND for ${file.name}: ${lat}, ${lng}`);
+                        } else {
+                            console.warn(`GPS MISSING for ${file.name}. Keys present:`, Object.keys(output).filter(k => k.toLowerCase().includes('gps')));
+                        }
+
+                        // Remove undefined OR NaN values
                         Object.keys(metadata).forEach(key => {
                             const val = metadata[key];
                             if (val === undefined || val === null || (typeof val === 'number' && isNaN(val))) {
