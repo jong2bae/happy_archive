@@ -42,13 +42,18 @@ const Upload = () => {
                 let metadata = {};
                 try {
                     // Extract all useful EXIF data including GPS
-                    // Using ArrayBuffer for better mobile browser compatibility
+                    // Using ArrayBuffer and broader options for better mobile browser compatibility
                     const buffer = await file.arrayBuffer();
                     const output = await exifr.parse(buffer, {
-                        pick: ['DateTimeOriginal', 'Make', 'Model', 'ISO', 'FNumber', 'ExposureTime', 'latitude', 'longitude'],
+                        gps: true,
+                        tiff: true,
+                        jfif: true,
                         translateValues: true,
                         reviveValues: true
                     });
+
+                    // Debug log for metadata extraction
+                    console.log(`EXIF Output for ${file.name}:`, output);
 
                     if (output) {
                         capturedAt = output.DateTimeOriginal;

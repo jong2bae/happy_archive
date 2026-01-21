@@ -365,24 +365,29 @@ const Gallery = () => {
                         className="flex flex-col md:flex-row w-full h-full max-w-screen-2xl mx-auto overflow-hidden shadow-2xl relative"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Top Control Bar in Lightbox */}
-                        <div className="absolute top-4 right-4 z-[80] flex gap-2">
-                            <button
-                                onClick={() => setShowInfo(!showInfo)}
-                                className={`p-2.5 rounded-full backdrop-blur-md transition-all ${showInfo ? 'bg-blue-600 text-white' : 'bg-black/50 text-white/80 hover:bg-black/70'}`}
-                                title="Photo Info"
-                            >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </button>
+                        {/* Lightbox Controls */}
+                        {/* Close button - Top Left for better separation */}
+                        <div className="absolute top-4 left-4 z-[80]">
                             <button
                                 onClick={() => setSelectedPhoto(null)}
-                                className="p-2.5 rounded-full bg-black/50 backdrop-blur-md text-white/80 hover:bg-black/70 transition-all"
+                                className="p-2.5 rounded-full bg-black/50 backdrop-blur-md text-white/80 hover:bg-black/70 transition-all shadow-lg"
                                 title="Close"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Info Toggle - Top Right */}
+                        <div className="absolute top-4 right-4 z-[80]">
+                            <button
+                                onClick={() => setShowInfo(!showInfo)}
+                                className={`p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg ${showInfo ? 'bg-blue-600 text-white' : 'bg-black/50 text-white/80 hover:bg-black/70'}`}
+                                title="Photo Info"
+                            >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </button>
                         </div>
@@ -415,12 +420,15 @@ const Gallery = () => {
                         `}>
                             <div className="p-6 overflow-y-auto flex-1">
                                 <div className="flex justify-between items-center mb-6">
-                                    <h3 className="text-xl font-bold text-white">Info</h3>
+                                    <h3 className="text-xl font-bold text-white uppercase tracking-wider text-sm opacity-60">Photo Info</h3>
+                                    {/* Only show this X button on mobile inside the info panel */}
                                     <button
-                                        className="md:hidden text-gray-400 hover:text-white"
+                                        className="md:hidden p-2 text-gray-400 hover:text-white"
                                         onClick={() => setShowInfo(false)}
                                     >
-                                        ✕
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
                                     </button>
                                 </div>
 
