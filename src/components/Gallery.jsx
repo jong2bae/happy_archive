@@ -277,30 +277,30 @@ const Gallery = () => {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-neutral-900 z-30" />
 
                     {/* Sliding Container */}
-                    <div className="absolute inset-0 z-10 flex w-full h-full">
+                    <div className="absolute inset-0 z-10">
                         <div
-                            className={`flex w-full h-full transition-transform duration-1000 ease-in-out`}
+                            className={`flex h-full transition-transform duration-1000 ease-in-out flex-nowrap`}
                             style={{
-                                transform: isSliding ? 'translateX(-50%)' : 'translateX(0)',
+                                transform: isSliding ? 'translate3d(-50%, 0, 0)' : 'translate3d(0, 0, 0)',
                                 width: '200%'
                             }}
                         >
                             {/* Current Image */}
-                            <div className="w-1/2 h-full relative">
+                            <div className="w-1/2 h-full relative flex-shrink-0">
                                 <img
                                     src={heroPhoto.url}
                                     alt="Featured"
-                                    className="w-full h-full object-cover scale-105"
+                                    className="w-full h-full object-cover object-center scale-105"
                                     style={{ filter: 'brightness(0.7)' }}
                                 />
                             </div>
-                            {/* Next Image */}
-                            <div className="w-1/2 h-full relative">
+                            {/* Next Image Slot */}
+                            <div className="w-1/2 h-full relative flex-shrink-0">
                                 {nextHeroPhoto && (
                                     <img
                                         src={nextHeroPhoto.url}
                                         alt="Next"
-                                        className="w-full h-full object-cover scale-105"
+                                        className="w-full h-full object-cover object-center scale-105"
                                         style={{ filter: 'brightness(0.7)' }}
                                     />
                                 )}
