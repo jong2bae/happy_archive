@@ -277,30 +277,30 @@ const Gallery = () => {
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-neutral-900 z-30" />
 
                     {/* Sliding Container */}
-                    <div className="absolute inset-0 z-10">
+                    <div className="absolute inset-0 z-10 overflow-hidden">
                         <div
-                            className={`flex h-full transition-transform duration-1000 ease-in-out flex-nowrap`}
+                            className={`flex h-full transition-transform duration-1000 ease-in-out`}
                             style={{
-                                transform: isSliding ? 'translate3d(-50%, 0, 0)' : 'translate3d(0, 0, 0)',
-                                width: '200%'
+                                transform: isSliding ? 'translate3d(-100%, 0, 0)' : 'translate3d(0, 0, 0)',
+                                width: '100%'
                             }}
                         >
                             {/* Current Image */}
-                            <div className="w-1/2 h-full relative flex-shrink-0">
+                            <div className="min-w-full h-full relative">
                                 <img
                                     src={heroPhoto.url}
                                     alt="Featured"
-                                    className="w-full h-full object-cover object-center scale-105"
+                                    className="w-full h-full object-cover object-center"
                                     style={{ filter: 'brightness(0.7)' }}
                                 />
                             </div>
                             {/* Next Image Slot */}
-                            <div className="w-1/2 h-full relative flex-shrink-0">
+                            <div className="min-w-full h-full relative">
                                 {nextHeroPhoto && (
                                     <img
                                         src={nextHeroPhoto.url}
                                         alt="Next"
-                                        className="w-full h-full object-cover object-center scale-105"
+                                        className="w-full h-full object-cover object-center"
                                         style={{ filter: 'brightness(0.7)' }}
                                     />
                                 )}
