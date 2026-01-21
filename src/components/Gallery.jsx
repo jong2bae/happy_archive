@@ -405,7 +405,16 @@ const Gallery = () => {
                         >
                             {/* Lightbox Controls */}
                             {/* Info Toggle - Top Right (Primary Control) */}
-                            <div className="absolute top-4 right-4 z-[80]">
+                            <div className="absolute top-4 right-4 z-[80] flex gap-2">
+                                <button
+                                    onClick={() => setSelectedPhoto(null)}
+                                    className="p-2.5 rounded-full backdrop-blur-md bg-black/50 text-white/80 hover:bg-black/70 transition-all shadow-lg"
+                                    title="Close Photo"
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
                                 <button
                                     onClick={() => setShowInfo(!showInfo)}
                                     className={`p-2.5 rounded-full backdrop-blur-md transition-all shadow-lg ${showInfo ? 'bg-blue-600 text-white' : 'bg-black/50 text-white/80 hover:bg-black/70'}`}
@@ -450,11 +459,8 @@ const Gallery = () => {
                                         </div>
                                         <button
                                             className="p-2 text-gray-400 hover:text-white bg-white/5 rounded-full transition"
-                                            onClick={() => {
-                                                setSelectedPhoto(null);
-                                                setShowInfo(false);
-                                            }}
-                                            title="Close Gallery"
+                                            onClick={() => setShowInfo(false)}
+                                            title="Close Info"
                                         >
                                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
