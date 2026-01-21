@@ -291,9 +291,9 @@ const Gallery = () => {
                         {/* Next (Incoming) Image */}
                         {nextHeroPhoto && (
                             <div
-                                className={`absolute inset-0 transition-all duration-1000 ease-in-out`}
+                                className={`absolute inset-0 ${isSliding ? 'transition-all duration-1000 ease-in-out' : ''}`}
                                 style={{
-                                    transform: isSliding ? 'translateX(0)' : 'translateX(100%)',
+                                    transform: isSliding ? 'translate3d(0, 0, 0)' : 'translate3d(100%, 0, 0)',
                                     opacity: isSliding ? 1 : 0,
                                     zIndex: 20
                                 }}
