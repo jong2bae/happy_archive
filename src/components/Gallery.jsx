@@ -15,6 +15,8 @@ const Gallery = () => {
     const [selectionMode, setSelectionMode] = useState(false);
     const [selectedPhotos, setSelectedPhotos] = useState(new Set());
     const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, message: '', onConfirm: null });
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
     const [heroPhoto, setHeroPhoto] = useState(null); // Current photo
     const [nextHeroPhoto, setNextHeroPhoto] = useState(null); // Next photo for sliding
     const [isSliding, setIsSliding] = useState(false); // Animation state
@@ -146,6 +148,32 @@ const Gallery = () => {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [selectedPhoto, handleNext, handlePrev]);
+
+    // Swipe Logic for Lightbox
+    const onTouchStart = (e) => {
+        setTouchEnd(null); // Reset end on new touch
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > 75;
+        const isRightSwipe = distance < -75;
+
+        if (isLeftSwipe) {
+            handleNext();
+        } else if (isRightSwipe) {
+            handlePrev();
+        }
+
+        setTouchStart(null);
+        setTouchEnd(null);
+    };
 
     const handleDownload = async (photo) => {
         try {
@@ -346,17 +374,21 @@ const Gallery = () => {
                                 <div className="bg-white/10 rounded-lg p-1 flex space-x-1">
                                     <button
                                         onClick={() => setViewMode('large')}
-                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'large' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        className={`px-2.5 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'large' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
                                         title="큰 이미지"
                                     >
-                                        ⊞
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                        </svg>
                                     </button>
                                     <button
                                         onClick={() => setViewMode('compact')}
-                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'compact' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                                        className={`px-2.5 py-1.5 rounded-md text-sm font-medium transition ${viewMode === 'compact' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
                                         title="작은 이미지"
                                     >
-                                        ⊡
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+                                        </svg>
                                     </button>
                                 </div>
 
@@ -486,7 +518,12 @@ const Gallery = () => {
                             </div>
 
                             {/* Image Viewer */}
-                            <div className="flex-1 relative bg-black flex items-center justify-center overflow-hidden">
+                            <div
+                                className="flex-1 relative bg-black flex items-center justify-center overflow-hidden"
+                                onTouchStart={onTouchStart}
+                                onTouchMove={onTouchMove}
+                                onTouchEnd={onTouchEnd}
+                            >
                                 <TransformWrapper
                                     initialScale={1}
                                     minScale={0.5}
