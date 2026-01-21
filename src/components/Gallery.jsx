@@ -290,7 +290,7 @@ const Gallery = () => {
                                 <img
                                     src={heroPhoto.url}
                                     alt="Featured"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover scale-105"
                                     style={{ filter: 'brightness(0.7)' }}
                                 />
                             </div>
@@ -300,7 +300,7 @@ const Gallery = () => {
                                     <img
                                         src={nextHeroPhoto.url}
                                         alt="Next"
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover scale-105"
                                         style={{ filter: 'brightness(0.7)' }}
                                     />
                                 )}
