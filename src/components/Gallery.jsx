@@ -281,7 +281,7 @@ const Gallery = () => {
                         <div
                             className={`flex w-full h-full transition-transform duration-1000 ease-in-out`}
                             style={{
-                                transform: isSliding ? 'translateX(-100%)' : 'translateX(0)',
+                                transform: isSliding ? 'translateX(-50%)' : 'translateX(0)',
                                 width: '200%'
                             }}
                         >
@@ -478,7 +478,7 @@ const Gallery = () => {
                     >
                         {/* Navigation Buttons (Left/Right) */}
                         <button
-                            className="fixed left-2 md:left-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/50 text-white z-[70] transition backdrop-blur-sm"
+                            className="fixed left-2 md:left-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/50 hover:bg-black/70 text-white z-[100] transition backdrop-blur-md shadow-2xl border border-white/10"
                             onClick={(e) => { e.stopPropagation(); handlePrev(); }}
                             title="Previous Photo"
                         >
@@ -487,7 +487,7 @@ const Gallery = () => {
                             </svg>
                         </button>
                         <button
-                            className="fixed right-2 md:right-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/30 hover:bg-black/50 text-white z-[70] transition backdrop-blur-sm"
+                            className="fixed right-2 md:right-4 top-1/2 -translate-y-1/2 p-2 md:p-3 rounded-full bg-black/50 hover:bg-black/70 text-white z-[100] transition backdrop-blur-md shadow-2xl border border-white/10"
                             onClick={(e) => { e.stopPropagation(); handleNext(); }}
                             title="Next Photo"
                         >
