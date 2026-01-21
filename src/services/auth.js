@@ -1,10 +1,12 @@
 import { auth } from '../firebase';
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, browserSessionPersistence } from "firebase/auth";
 
 const provider = new GoogleAuthProvider();
 
 export const loginWithGoogle = async () => {
     try {
+        // Set persistence to session only (clears on tab/window close)
+        await auth.setPersistence(browserSessionPersistence);
         const result = await signInWithPopup(auth, provider);
         return result.user;
     } catch (error) {
