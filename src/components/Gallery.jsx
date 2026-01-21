@@ -279,7 +279,7 @@ const Gallery = () => {
                     {/* Sliding Container */}
                     <div className="absolute inset-0 z-10 overflow-hidden">
                         <div
-                            className={`flex h-full transition-transform duration-1000 ease-in-out`}
+                            className={`flex h-full ${isSliding ? 'transition-transform duration-1000 ease-in-out' : ''}`}
                             style={{
                                 transform: isSliding ? 'translate3d(-100%, 0, 0)' : 'translate3d(0, 0, 0)',
                                 width: '100%'
