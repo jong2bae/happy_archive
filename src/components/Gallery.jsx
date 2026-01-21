@@ -60,12 +60,12 @@ const Gallery = () => {
                 setNextHeroPhoto(next);
                 setIsSliding(true);
 
-                // Complete transition after animation duration (1000ms)
+                // Complete transition after animation duration (1200ms for smoothness)
                 setTimeout(() => {
                     setHeroPhoto(next);
-                    setNextHeroPhoto(null);
                     setIsSliding(false);
-                }, 1000);
+                    setTimeout(() => setNextHeroPhoto(null), 50);
+                }, 1200);
             }
         }, 5000);
 
@@ -276,36 +276,36 @@ const Gallery = () => {
                 <div className="relative h-[40vh] md:h-[60vh] overflow-hidden group">
                     <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-neutral-900 z-30" />
 
-                    {/* Sliding Container */}
-                    <div className="absolute inset-0 z-10 overflow-hidden">
-                        <div
-                            className={`flex h-full ${isSliding ? 'transition-transform duration-1000 ease-in-out' : ''}`}
-                            style={{
-                                transform: isSliding ? 'translate3d(-100%, 0, 0)' : 'translate3d(0, 0, 0)',
-                                width: '100%'
-                            }}
-                        >
-                            {/* Current Image */}
-                            <div className="min-w-full h-full relative">
+                    {/* Slideshow Container */}
+                    <div className="absolute inset-0 z-10">
+                        {/* Current (Base) Image */}
+                        <div className="absolute inset-0">
+                            <img
+                                src={heroPhoto.url}
+                                alt="Featured"
+                                className="w-full h-full object-cover object-center"
+                                style={{ filter: 'brightness(0.7)' }}
+                            />
+                        </div>
+
+                        {/* Next (Incoming) Image */}
+                        {nextHeroPhoto && (
+                            <div
+                                className={`absolute inset-0 transition-all duration-1000 ease-in-out`}
+                                style={{
+                                    transform: isSliding ? 'translateX(0)' : 'translateX(100%)',
+                                    opacity: isSliding ? 1 : 0,
+                                    zIndex: 20
+                                }}
+                            >
                                 <img
-                                    src={heroPhoto.url}
-                                    alt="Featured"
+                                    src={nextHeroPhoto.url}
+                                    alt="Next"
                                     className="w-full h-full object-cover object-center"
                                     style={{ filter: 'brightness(0.7)' }}
                                 />
                             </div>
-                            {/* Next Image Slot */}
-                            <div className="min-w-full h-full relative">
-                                {nextHeroPhoto && (
-                                    <img
-                                        src={nextHeroPhoto.url}
-                                        alt="Next"
-                                        className="w-full h-full object-cover object-center"
-                                        style={{ filter: 'brightness(0.7)' }}
-                                    />
-                                )}
-                            </div>
-                        </div>
+                        )}
                     </div>
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center z-40 px-4 text-center">
