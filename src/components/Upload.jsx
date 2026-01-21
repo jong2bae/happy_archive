@@ -42,13 +42,14 @@ const Upload = () => {
                 let metadata = {};
                 try {
                     // Extract all useful EXIF data including GPS
-                    // Explicitly requesting gps and translateValues for mobile resilience
-                    const output = await exifr.parse(file, {
-                        gps: true,
-                        tiff: true,
-                        jfif: true,
-                        translateValues: true
+                    // Using ArrayBuffer for better mobile browser compatibility
+                    const buffer = await file.arrayBuffer();
+                    const output = await exifr.parse(buffer, {
+                        pick: ['DateTimeOriginal', 'Make', 'Model', 'ISO', 'FNumber', 'ExposureTime', 'latitude', 'longitude'],
+                        translateValues: true,
+                        reviveValues: true
                     });
+
                     if (output) {
                         capturedAt = output.DateTimeOriginal;
                         metadata = {
@@ -60,9 +61,10 @@ const Upload = () => {
                             latitude: output.latitude,
                             longitude: output.longitude
                         };
-                        // Remove undefined values (Firestore doesn't support undefined)
+                        // Remove undefined OR NaN values (Firestore doesn't support undefined, and NaN is useless)
                         Object.keys(metadata).forEach(key => {
-                            if (metadata[key] === undefined) {
+                            const val = metadata[key];
+                            if (val === undefined || val === null || (typeof val === 'number' && isNaN(val))) {
                                 delete metadata[key];
                             }
                         });
